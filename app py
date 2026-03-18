@@ -1,0 +1,27 @@
+from flask import Flask, request
+from twilio.twiml.messaging_response import MessagingResponse
+from chatbot import responder
+from database import criar_tabelas
+
+app = Flask(__name__)
+
+criar_tabelas()
+
+@app.route("/whatsapp", methods=["POST"])
+
+def whatsapp():
+
+    mensagem = request.form.get("Body")
+    telefone = request.form.get("From")
+
+    cliente = telefone
+
+    resposta_texto = responder(mensagem, cliente, telefone)
+
+    resp = MessagingResponse()
+    resp.message(resposta_texto)
+
+    return str(resp)
+
+if __name__ == "__main__":
+    app.run(port=5000)
